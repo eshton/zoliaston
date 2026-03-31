@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Varju &amp; Fung — Software Engineering &amp; AI Consultancy</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="description" content="Varju & Fung is a software engineering and AI consultancy helping businesses build, scale, and innovate with custom software and intelligent systems.">
 <style>
 /* ========================================
@@ -304,25 +305,35 @@ nav.scrolled {
   z-index: 1;
 }
 
+.hero-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+}
+
+.hero-text {
+  min-width: 0;
+}
+
 .hero-eyebrow {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.25em;
   color: var(--accent);
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   opacity: 0;
   animation: fadeUp 0.8s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .hero h1 {
   font-family: var(--font-display);
-  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-size: clamp(2.2rem, 4vw, 3.6rem);
   font-weight: 400;
-  line-height: 1.08;
+  line-height: 1.1;
   letter-spacing: -0.02em;
-  margin-bottom: 32px;
-  max-width: 900px;
+  margin-bottom: 24px;
   opacity: 0;
   animation: fadeUp 0.8s 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -333,10 +344,9 @@ nav.scrolled {
 }
 
 .hero-sub {
-  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
   color: var(--text-secondary);
-  max-width: 520px;
-  margin-bottom: 48px;
+  margin-bottom: 36px;
   line-height: 1.75;
   opacity: 0;
   animation: fadeUp 0.8s 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -346,12 +356,12 @@ nav.scrolled {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 16px 36px;
+  padding: 14px 32px;
   background: transparent;
   border: 1px solid var(--accent);
   color: var(--accent);
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   cursor: pointer;
@@ -367,7 +377,12 @@ nav.scrolled {
   transition: transform 0.3s ease;
   font-size: 1.1em;
 }
-.hero-cta:hover .arrow { transform: translateX(4px); }
+.hero-cta:hover .arrow { transform: translateY(2px); }
+
+.hero-chat {
+  opacity: 0;
+  animation: fadeUp 0.8s 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
 
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(28px); }
@@ -791,14 +806,209 @@ footer {
 }
 
 /* ========================================
+   CHAT AGENT
+   ======================================== */
+.chat-window {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  height: 480px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+}
+
+.chat-header-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34C759;
+  flex-shrink: 0;
+}
+
+.chat-header-title {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 2px; }
+
+.chat-bubble {
+  max-width: 80%;
+  padding: 14px 20px;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  animation: fadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chat-bubble.assistant {
+  align-self: flex-start;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  border-radius: 0 12px 12px 12px;
+}
+
+.chat-bubble.user {
+  align-self: flex-end;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 12px 0 12px 12px;
+}
+
+.chat-bubble.typing {
+  align-self: flex-start;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0 12px 12px 12px;
+  padding: 14px 24px;
+}
+
+.typing-dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  height: 20px;
+}
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  background: var(--text-muted);
+  border-radius: 50%;
+  animation: typingBounce 1.2s infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
+.chat-input-area {
+  display: flex;
+  gap: 12px;
+  padding: 20px 28px;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-primary);
+}
+
+.chat-input {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  padding: 12px 16px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+  resize: none;
+  min-height: 44px;
+  max-height: 120px;
+  line-height: 1.5;
+}
+.chat-input:focus { border-color: var(--accent); }
+.chat-input::placeholder { color: var(--text-muted); }
+
+.chat-send {
+  align-self: flex-end;
+  padding: 12px 24px;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: background 0.3s ease, opacity 0.3s ease;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.chat-send:hover { background: var(--accent-light); }
+.chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* — Chat overlay / expanded state — */
+.chat-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.chat-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.chat-window.expanded {
+  position: fixed;
+  z-index: 2001;
+  inset: 0;
+  margin: auto;
+  width: min(800px, calc(100vw - 40px));
+  height: min(700px, calc(100vh - 60px));
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+  border-radius: 8px;
+}
+
+.chat-window.expanded .chat-header {
+  cursor: default;
+}
+
+.chat-close {
+  display: none;
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+.chat-close:hover { color: var(--text-primary); }
+.chat-window.expanded .chat-close { display: block; }
+
+/* ========================================
    MOBILE REFINEMENTS
    ======================================== */
 
 /* — Tablets & small laptops — */
 @media (max-width: 900px) {
   .hero { min-height: auto; padding: 120px 0 64px; }
+  .hero-split { grid-template-columns: 1fr; }
   .hero h1 br { display: none; }
   .section-heading br { display: none; }
+  .chat-window { height: 400px; }
 }
 
 /* — Mobile — */
@@ -818,6 +1028,13 @@ footer {
     width: 100%;
     justify-content: center;
   }
+
+  .chat-window { height: 380px; }
+  .chat-messages { padding: 20px; gap: 16px; }
+  .chat-bubble { max-width: 90%; padding: 12px 16px; font-size: 0.88rem; }
+  .chat-input-area { padding: 16px 20px; }
+  .chat-input { font-size: 16px; }
+  .chat-send { padding: 12px 18px; }
 
   .services-grid { margin-top: 36px; }
 
@@ -893,13 +1110,32 @@ footer {
 
 <!-- ==================== HERO ==================== -->
 <section class="hero" id="hero">
-  <div class="container hero-content">
-    <p class="hero-eyebrow">Software Engineering &amp; AI Consultancy</p>
-    <h1>We build the software<br>that builds your <em>business</em></h1>
-    <p class="hero-sub">Custom application development and AI solutions, delivered by engineers with decades of enterprise experience at companies like EY, bp, and Tesco.</p>
-    <a href="#contact" class="hero-cta">
-      Start a conversation <span class="arrow">&rarr;</span>
-    </a>
+  <div class="container hero-content hero-split">
+    <div class="hero-text">
+      <p class="hero-eyebrow">Software Engineering &amp; AI Consultancy</p>
+      <h1>We build the software that builds your <em>business</em></h1>
+      <p class="hero-sub">Custom application development and AI solutions, delivered by engineers with decades of enterprise experience at companies like EY, bp, and Tesco.</p>
+      <a href="#contact" class="hero-cta">
+        Learn more <span class="arrow">&darr;</span>
+      </a>
+    </div>
+    <div class="hero-chat" id="chat">
+      <div class="chat-overlay" id="chatOverlay"></div>
+      <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+          <span class="chat-header-dot"></span>
+          <span class="chat-header-title">Ask us anything</span>
+          <button class="chat-close" id="chatClose" aria-label="Close chat">&times;</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-bubble assistant">Hi, I'm the Varju &amp; Fung assistant. Ask me anything about our services, team, or how we can help your business.</div>
+        </div>
+        <div class="chat-input-area">
+          <textarea class="chat-input" id="chatInput" placeholder="Type your question..." rows="1"></textarea>
+          <button class="chat-send" id="chatSend">Send</button>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1154,6 +1390,122 @@ footer {
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
   reveals.forEach(function(el) { observer.observe(el); });
+
+  // ── Chat agent ──
+  var chatMessages = document.getElementById('chatMessages');
+  var chatInput = document.getElementById('chatInput');
+  var chatSend = document.getElementById('chatSend');
+  var chatWindow = document.getElementById('chatWindow');
+  var chatOverlay = document.getElementById('chatOverlay');
+  var chatClose = document.getElementById('chatClose');
+  var conversationHistory = [];
+  var chatExpanded = false;
+
+  function expandChat() {
+    if (chatExpanded) return;
+    chatExpanded = true;
+    chatWindow.classList.add('expanded');
+    chatOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function collapseChat() {
+    if (!chatExpanded) return;
+    chatExpanded = false;
+    chatWindow.classList.remove('expanded');
+    chatOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  chatInput.addEventListener('focus', expandChat);
+  chatOverlay.addEventListener('click', collapseChat);
+  chatClose.addEventListener('click', function() {
+    collapseChat();
+    chatInput.blur();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && chatExpanded) {
+      collapseChat();
+      chatInput.blur();
+    }
+  });
+
+  function addBubble(text, role) {
+    var bubble = document.createElement('div');
+    bubble.className = 'chat-bubble ' + role;
+    bubble.textContent = text;
+    chatMessages.appendChild(bubble);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return bubble;
+  }
+
+  function showTyping() {
+    var bubble = document.createElement('div');
+    bubble.className = 'chat-bubble typing';
+    bubble.id = 'typingIndicator';
+    bubble.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+    chatMessages.appendChild(bubble);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function removeTyping() {
+    var el = document.getElementById('typingIndicator');
+    if (el) el.remove();
+  }
+
+  function sendMessage() {
+    var text = chatInput.value.trim();
+    if (!text) return;
+
+    expandChat();
+    addBubble(text, 'user');
+    conversationHistory.push({ role: 'user', content: text });
+    chatInput.value = '';
+    chatInput.style.height = 'auto';
+    chatSend.disabled = true;
+    showTyping();
+
+    fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: conversationHistory })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      removeTyping();
+      if (data.error) {
+        addBubble('Sorry, something went wrong. Please try again or contact us at hello@varjufung.com.', 'assistant');
+      } else {
+        var reply = data.content || 'Sorry, I could not generate a response.';
+        addBubble(reply, 'assistant');
+        conversationHistory.push({ role: 'assistant', content: reply });
+      }
+      chatSend.disabled = false;
+      chatInput.focus();
+    })
+    .catch(function() {
+      removeTyping();
+      addBubble('Sorry, I could not connect. Please try again or reach us at hello@varjufung.com.', 'assistant');
+      chatSend.disabled = false;
+    });
+  }
+
+  chatSend.addEventListener('click', sendMessage);
+
+  chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  // Auto-resize textarea
+  chatInput.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+  });
 })();
 </script>
 </body>
