@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Varju &amp; Fung — Software Engineering &amp; AI Consultancy</title>
+<meta name="description" content="Varju & Fung is a software engineering and AI consultancy helping businesses build, scale, and innovate with custom software and intelligent systems.">
+<style>
+/* ========================================
+   DESIGN TOKENS
+   ======================================== */
+:root {
+  /* Palette — light & warm with subtle colour */
+  --bg-primary: #FAF9F6;
+  --bg-surface: #F3F1ED;
+  --bg-elevated: #EDEAE4;
+  --bg-card: #FFFFFF;
+  --border-subtle: rgba(58, 72, 96, 0.10);
+  --border-accent: rgba(86, 120, 144, 0.28);
+
+  --text-primary: #1E2330;
+  --text-secondary: #5A6275;
+  --text-muted: #99A0B0;
+  --accent: #4A7C8F;
+  --accent-light: #3A6573;
+  --accent-glow: rgba(74, 124, 143, 0.06);
+
+  /* Typography */
+  --font-display: Didot, 'Bodoni MT', 'Noto Serif Display', 'URW Palladio L', serif;
+  --font-body: 'Avenir Next', Avenir, 'Gill Sans', 'Segoe UI', Corbel, sans-serif;
+  --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+
+  /* Spacing */
+  --section-pad: clamp(80px, 12vh, 160px);
+  --container-max: 1200px;
+  --grid-gap: clamp(20px, 3vw, 40px);
+}
+
+/* ========================================
+   RESET & BASE
+   ======================================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+a:hover { color: var(--accent-light); }
+
+img { display: block; max-width: 100%; }
+
+/* ========================================
+   NOISE OVERLAY — texture & depth
+   ======================================== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px;
+}
+
+/* ========================================
+   CONTAINER
+   ======================================== */
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 clamp(24px, 5vw, 48px);
+}
+
+/* ========================================
+   SCROLL ANIMATIONS
+   ======================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ========================================
+   NAVIGATION
+   ======================================== */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 0 clamp(24px, 5vw, 48px);
+  transition: background 0.4s ease, backdrop-filter 0.4s ease;
+}
+
+nav.scrolled {
+  background: rgba(9, 9, 13, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.nav-inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 72px;
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  letter-spacing: 0.04em;
+  font-weight: 400;
+}
+.nav-logo .ampersand {
+  color: var(--accent);
+  font-style: italic;
+  margin: 0 0.15em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 500;
+  position: relative;
+  padding-bottom: 2px;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+.nav-links a:hover { color: var(--text-primary); }
+.nav-links a:hover::after { width: 100%; }
+
+/* Mobile nav toggle */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+.nav-toggle span {
+  display: block;
+  width: 24px;
+  height: 1.5px;
+  background: var(--text-primary);
+  margin: 6px 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.nav-toggle.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+@media (max-width: 768px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    position: fixed;
+    top: 72px;
+    left: 0;
+    right: 0;
+    background: rgba(9, 9, 13, 0.97);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    padding: 32px clamp(24px, 5vw, 48px);
+    gap: 24px;
+    transform: translateY(-120%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .nav-links.open { transform: translateY(0); }
+}
+
+/* ========================================
+   SECTION LABEL
+   ======================================== */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-label::before {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  letter-spacing: -0.01em;
+}
+
+.section-sub {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+/* ========================================
+   HERO
+   ======================================== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 120px 0 var(--section-pad);
+}
+
+/* Subtle grid background */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(184, 146, 106, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184, 146, 106, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
+}
+
+/* Ambient glow */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  right: 5%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(184, 146, 106, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin-bottom: 32px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+  max-width: 900px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero-sub {
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin-bottom: 48px;
+  line-height: 1.75;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 36px;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  animation: fadeUp 0.8s 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.hero-cta:hover {
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+.hero-cta .arrow {
+  transition: transform 0.3s ease;
+  font-size: 1.1em;
+}
+.hero-cta:hover .arrow { transform: translateX(4px); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========================================
+   HORIZONTAL RULE — section divider
+   ======================================== */
+.divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
+  margin: 0;
+}
+
+/* ========================================
+   SERVICES
+   ======================================== */
+.services {
+  padding: var(--section-pad) 0;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+  margin-top: 56px;
+}
+
+.service-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  padding: clamp(32px, 4vw, 48px);
+  position: relative;
+  transition: border-color 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.service-card:hover::before { opacity: 1; }
+.service-card:hover {
+  border-color: var(--border-accent);
+  transform: translateY(-4px);
+}
+
+.service-number {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  margin-bottom: 28px;
+  opacity: 0.6;
+}
+
+.service-card h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 400;
+  margin-bottom: 18px;
+  line-height: 1.3;
+}
+
+.service-card p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  margin-bottom: 24px;
+}
+
+.service-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.service-tags span {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  padding: 4px 12px;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .services-grid { grid-template-columns: 1fr; }
+}
+
+/* ========================================
+   TEAM
+   ======================================== */
+.team {
+  padding: var(--section-pad) 0;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--grid-gap);
+  margin-top: 56px;
+}
+
+.team-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  padding: clamp(36px, 4vw, 52px);
+  position: relative;
+  transition: border-color 0.4s ease;
+}
+.team-card:hover { border-color: var(--border-accent); }
+
+.team-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.team-name {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.team-link {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  padding: 6px 14px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+.team-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.team-role {
+  font-size: 0.85rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-family: var(--font-mono);
+  margin-bottom: 28px;
+  font-size: 0.75rem;
+}
+
+.team-bio {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  margin-bottom: 28px;
+}
+
+.team-details {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.team-details li {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.team-details li::before {
+  content: '—';
+  color: var(--accent);
+  flex-shrink: 0;
+  font-size: 0.85em;
+}
+
+.team-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-subtle);
+}
+.team-skills span {
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  padding: 4px 12px;
+  background: var(--accent-glow);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .team-grid { grid-template-columns: 1fr; }
+  .team-card-header { flex-direction: column; gap: 12px; }
+}
+
+/* ========================================
+   WHY US
+   ======================================== */
+.why {
+  padding: var(--section-pad) 0;
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  margin-top: 56px;
+  background: var(--border-subtle);
+}
+
+.why-item {
+  background: var(--bg-primary);
+  padding: clamp(28px, 4vw, 44px);
+  text-align: center;
+  transition: background 0.4s ease;
+}
+.why-item:hover { background: var(--bg-card); }
+
+.why-number {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  color: var(--accent);
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+.why-label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .why-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .why-grid { grid-template-columns: 1fr; }
+}
+
+/* ========================================
+   CONTACT
+   ======================================== */
+.contact {
+  padding: var(--section-pad) 0;
+  padding-bottom: calc(var(--section-pad) + 40px);
+}
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--grid-gap) * 2);
+  margin-top: 56px;
+}
+
+.contact-info p {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.75;
+  margin-bottom: 36px;
+}
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-link-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+}
+.contact-link-item .link-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  min-width: 72px;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.form-field label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+}
+
+.form-field input,
+.form-field textarea {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  padding: 14px 18px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+  resize: vertical;
+}
+.form-field input:focus,
+.form-field textarea:focus {
+  border-color: var(--accent);
+}
+.form-field textarea { min-height: 120px; }
+
+.form-submit {
+  align-self: flex-start;
+  padding: 14px 36px;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.form-submit:hover {
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+
+@media (max-width: 768px) {
+  .contact-layout { grid-template-columns: 1fr; }
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
+footer {
+  padding: 32px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 480px) {
+  .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== NAVIGATION ==================== -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Varju <span class="ampersand">&amp;</span> Fung</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#team">Team</a></li>
+      <li><a href="#why">Why Us</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero" id="hero">
+  <div class="container hero-content">
+    <p class="hero-eyebrow">Software Engineering &amp; AI Consultancy</p>
+    <h1>We build the software<br>that builds your <em>business</em></h1>
+    <p class="hero-sub">Custom application development and AI solutions, delivered by engineers with decades of enterprise experience at companies like EY, bp, and Tesco.</p>
+    <a href="#contact" class="hero-cta">
+      Start a conversation <span class="arrow">&rarr;</span>
+    </a>
+  </div>
+</section>
+
+<div class="container"><hr class="divider"></div>
+
+<!-- ==================== SERVICES ==================== -->
+<section class="services" id="services">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">What we do</p>
+      <h2 class="section-heading">Engineering expertise,<br>end to end</h2>
+      <p class="section-sub">From architecture to deployment, from prototype to production-grade AI — we handle the full lifecycle.</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1">
+        <span class="service-number">01</span>
+        <h3>Application Development</h3>
+        <p>Full-stack application development, from architecture to deployment. Enterprise-grade systems, cloud-native applications, and scalable platforms built on 20+ years of combined experience.</p>
+        <div class="service-tags">
+          <span>Full-Stack</span>
+          <span>Cloud-Native</span>
+          <span>Enterprise</span>
+          <span>Scalable</span>
+        </div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-2">
+        <span class="service-number">02</span>
+        <h3>AI &amp; Machine Learning</h3>
+        <p>Natural language processing, computer vision, enterprise search, and predictive analytics. 15+ years of specialised AI expertise, from proof-of-concept to production-ready intelligent systems.</p>
+        <div class="service-tags">
+          <span>NLP</span>
+          <span>Computer Vision</span>
+          <span>Search</span>
+          <span>Analytics</span>
+        </div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-3">
+        <span class="service-number">03</span>
+        <h3>Technical Leadership</h3>
+        <p>Data science team leadership, technical architecture review, AI strategy, and roadmap development. Helping companies make smart technology decisions and execute with confidence.</p>
+        <div class="service-tags">
+          <span>Strategy</span>
+          <span>Architecture</span>
+          <span>Team Leadership</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><hr class="divider"></div>
+
+<!-- ==================== TEAM ==================== -->
+<section class="team" id="team">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Who we are</p>
+      <h2 class="section-heading">Two engineers,<br>one shared mission</h2>
+      <p class="section-sub">Decades of experience across startups, enterprises, and research institutions — combined into a single, focused consultancy.</p>
+    </div>
+
+    <div class="team-grid">
+      <!-- Zoltan -->
+      <div class="team-card reveal reveal-delay-1">
+        <div class="team-card-header">
+          <h3 class="team-name">Zoltan Varju</h3>
+          <a href="https://crowintelligence.org/" target="_blank" rel="noopener" class="team-link">Website &nearr;</a>
+        </div>
+        <p class="team-role">AI &amp; Data Science Lead</p>
+        <p class="team-bio">AI expert with 15+ years in Natural Language Processing. Former Head of Data Science and co-founder of a regtech company, Zoltan brings deep technical expertise and cross-industry leadership.</p>
+        <ul class="team-details">
+          <li>15+ years specialising in NLP and AI</li>
+          <li>Former Head of Data Science</li>
+          <li>Co-founded a regtech company</li>
+          <li>Collaborated with the Vector Institute</li>
+          <li>Founded the Open NLP Meetup (2,000+ members)</li>
+        </ul>
+        <div class="team-skills">
+          <span>NLP</span>
+          <span>Python</span>
+          <span>Machine Learning</span>
+          <span>Computer Vision</span>
+          <span>Enterprise Search</span>
+          <span>Fintech</span>
+          <span>Data Visualisation</span>
+        </div>
+      </div>
+
+      <!-- Agoston -->
+      <div class="team-card reveal reveal-delay-2">
+        <div class="team-card-header">
+          <h3 class="team-name">Agoston Fung</h3>
+          <a href="https://www.linkedin.com/in/agostonfung/" target="_blank" rel="noopener" class="team-link">LinkedIn &nearr;</a>
+        </div>
+        <p class="team-role">Software Engineering Lead</p>
+        <p class="team-bio">Engineer with 20+ years in software, spanning startups and major enterprises including EY, bp, and Tesco. Agoston bridges the gap between scrappy startup execution and enterprise-scale delivery.</p>
+        <ul class="team-details">
+          <li>20+ years in software engineering</li>
+          <li>Enterprise experience at EY, bp, Tesco</li>
+          <li>Full-stack development expertise</li>
+          <li>Kingston University — Distinction</li>
+          <li>Fluent in English and Hungarian</li>
+        </ul>
+        <div class="team-skills">
+          <span>Full-Stack</span>
+          <span>Enterprise Systems</span>
+          <span>Cloud</span>
+          <span>Architecture</span>
+          <span>LLMs</span>
+          <span>DevOps</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><hr class="divider"></div>
+
+<!-- ==================== WHY US ==================== -->
+<section class="why" id="why">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Why us</p>
+      <h2 class="section-heading">Numbers that<br>speak for themselves</h2>
+    </div>
+
+    <div class="why-grid reveal reveal-delay-1">
+      <div class="why-item">
+        <div class="why-number">35+</div>
+        <div class="why-label">Combined years<br>of experience</div>
+      </div>
+      <div class="why-item">
+        <div class="why-number">F500</div>
+        <div class="why-label">Enterprise-proven at<br>Fortune 500 companies</div>
+      </div>
+      <div class="why-item">
+        <div class="why-number">E2E</div>
+        <div class="why-label">End-to-end delivery,<br>concept to production</div>
+      </div>
+      <div class="why-item">
+        <div class="why-number">AI</div>
+        <div class="why-label">Deep expertise backed<br>by real-world deployment</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><hr class="divider"></div>
+
+<!-- ==================== CONTACT ==================== -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Get in touch</p>
+      <h2 class="section-heading">Let's build<br>something together</h2>
+    </div>
+
+    <div class="contact-layout">
+      <div class="contact-info reveal reveal-delay-1">
+        <p>Whether you need a full application built from scratch, AI integrated into your existing systems, or strategic technical guidance — we'd like to hear from you.</p>
+        <div class="contact-links">
+          <div class="contact-link-item">
+            <span class="link-label">Email</span>
+            <a href="mailto:hello@varjufung.com">hello@varjufung.com</a>
+          </div>
+          <div class="contact-link-item">
+            <span class="link-label">Zoltan</span>
+            <a href="https://crowintelligence.org/" target="_blank" rel="noopener">crowintelligence.org</a>
+          </div>
+          <div class="contact-link-item">
+            <span class="link-label">Agoston</span>
+            <a href="https://www.linkedin.com/in/agostonfung/" target="_blank" rel="noopener">linkedin.com/in/agostonfung</a>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form reveal reveal-delay-2" onsubmit="event.preventDefault();">
+        <div class="form-field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name" autocomplete="name">
+        </div>
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@company.com" autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Tell us about your project..."></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <div class="container footer-inner">
+    <span>&copy; 2026 Varju &amp; Fung</span>
+    <span>Budapest &middot; London &middot; Toronto</span>
+  </div>
+</footer>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+(function() {
+  'use strict';
+
+  // ── Nav scroll effect ──
+  const nav = document.getElementById('nav');
+  let lastScroll = 0;
+  function onScroll() {
+    const y = window.scrollY;
+    nav.classList.toggle('scrolled', y > 60);
+    lastScroll = y;
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // ── Mobile nav toggle ──
+  const toggle = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', function() {
+    toggle.classList.toggle('open');
+    links.classList.toggle('open');
+  });
+  // Close on link click
+  links.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      toggle.classList.remove('open');
+      links.classList.remove('open');
+    });
+  });
+
+  // ── Scroll reveal ──
+  var reveals = document.querySelectorAll('.reveal');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(function(el) { observer.observe(el); });
+})();
+</script>
+</body>
+</html>
