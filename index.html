@@ -10,20 +10,20 @@
    DESIGN TOKENS
    ======================================== */
 :root {
-  /* Palette — light & warm with subtle colour */
+  /* Palette — light & warm with bold vermillion accent */
   --bg-primary: #FAF9F6;
   --bg-surface: #F3F1ED;
   --bg-elevated: #EDEAE4;
   --bg-card: #FFFFFF;
-  --border-subtle: rgba(58, 72, 96, 0.10);
-  --border-accent: rgba(86, 120, 144, 0.28);
+  --border-subtle: rgba(30, 35, 48, 0.08);
+  --border-accent: rgba(212, 69, 39, 0.25);
 
   --text-primary: #1E2330;
   --text-secondary: #5A6275;
   --text-muted: #99A0B0;
-  --accent: #4A7C8F;
-  --accent-light: #3A6573;
-  --accent-glow: rgba(74, 124, 143, 0.06);
+  --accent: #D44527;
+  --accent-light: #B83A20;
+  --accent-glow: rgba(212, 69, 39, 0.05);
 
   /* Typography */
   --font-display: Didot, 'Bodoni MT', 'Noto Serif Display', 'URW Palladio L', serif;
@@ -79,7 +79,7 @@ body::before {
   inset: 0;
   z-index: 9999;
   pointer-events: none;
-  opacity: 0.025;
+  opacity: 0.018;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   background-size: 256px;
 }
@@ -125,7 +125,7 @@ nav {
 }
 
 nav.scrolled {
-  background: rgba(9, 9, 13, 0.85);
+  background: rgba(250, 249, 246, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-subtle);
@@ -191,7 +191,7 @@ nav.scrolled {
 .nav-toggle span {
   display: block;
   width: 24px;
-  height: 1.5px;
+  height: 2px;
   background: var(--text-primary);
   margin: 6px 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
@@ -207,7 +207,7 @@ nav.scrolled {
     top: 72px;
     left: 0;
     right: 0;
-    background: rgba(9, 9, 13, 0.97);
+    background: rgba(250, 249, 246, 0.97);
     backdrop-filter: blur(20px);
     flex-direction: column;
     padding: 32px clamp(24px, 5vw, 48px);
@@ -217,6 +217,12 @@ nav.scrolled {
     border-bottom: 1px solid var(--border-subtle);
   }
   .nav-links.open { transform: translateY(0); }
+  .nav-links li { width: 100%; }
+  .nav-links a {
+    display: block;
+    padding: 8px 0;
+    font-size: 0.9rem;
+  }
 }
 
 /* ========================================
@@ -274,8 +280,8 @@ nav.scrolled {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(184, 146, 106, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(184, 146, 106, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(212, 69, 39, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 69, 39, 0.04) 1px, transparent 1px);
   background-size: 60px 60px;
   mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
@@ -289,7 +295,7 @@ nav.scrolled {
   right: 5%;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(184, 146, 106, 0.04) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(212, 69, 39, 0.05) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -397,8 +403,9 @@ nav.scrolled {
   border: 1px solid var(--border-subtle);
   padding: clamp(32px, 4vw, 48px);
   position: relative;
-  transition: border-color 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
   overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .service-card::before {
@@ -416,6 +423,7 @@ nav.scrolled {
 .service-card:hover {
   border-color: var(--border-accent);
   transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(212, 69, 39, 0.07);
 }
 
 .service-number {
@@ -480,9 +488,43 @@ nav.scrolled {
   border: 1px solid var(--border-subtle);
   padding: clamp(36px, 4vw, 52px);
   position: relative;
-  transition: border-color 0.4s ease;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
-.team-card:hover { border-color: var(--border-accent); }
+.team-card:hover {
+  border-color: var(--border-accent);
+  box-shadow: 0 8px 24px rgba(212, 69, 39, 0.07);
+}
+
+.team-photo-wrapper {
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+  margin-bottom: 28px;
+  position: relative;
+}
+.team-photo-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(transparent, var(--bg-card));
+  pointer-events: none;
+}
+.team-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  filter: grayscale(0.15);
+  transition: filter 0.5s ease, transform 0.5s ease;
+}
+.team-card:hover .team-photo {
+  filter: grayscale(0);
+  transform: scale(1.03);
+}
 
 .team-card-header {
   display: flex;
@@ -592,12 +634,12 @@ nav.scrolled {
 }
 
 .why-item {
-  background: var(--bg-primary);
+  background: var(--bg-card);
   padding: clamp(28px, 4vw, 44px);
   text-align: center;
   transition: background 0.4s ease;
 }
-.why-item:hover { background: var(--bg-card); }
+.why-item:hover { background: var(--bg-surface); }
 
 .why-number {
   font-family: var(--font-display);
@@ -688,7 +730,7 @@ nav.scrolled {
 
 .form-field input,
 .form-field textarea {
-  background: var(--bg-card);
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   padding: 14px 18px;
   color: var(--text-primary);
@@ -746,6 +788,88 @@ footer {
 
 @media (max-width: 480px) {
   .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
+}
+
+/* ========================================
+   MOBILE REFINEMENTS
+   ======================================== */
+
+/* — Tablets & small laptops — */
+@media (max-width: 900px) {
+  .hero { min-height: auto; padding: 120px 0 64px; }
+  .hero h1 br { display: none; }
+  .section-heading br { display: none; }
+}
+
+/* — Mobile — */
+@media (max-width: 768px) {
+  :root {
+    --section-pad: 56px;
+  }
+
+  .hero { padding: 100px 0 48px; }
+  .hero-eyebrow { margin-bottom: 20px; font-size: 0.7rem; }
+  .hero h1 { margin-bottom: 24px; }
+  .hero-sub { margin-bottom: 36px; }
+
+  .hero-cta {
+    padding: 14px 28px;
+    font-size: 0.8rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .services-grid { margin-top: 36px; }
+
+  .service-card { padding: 28px; }
+  .service-card:hover { transform: none; }
+
+  .team-grid { margin-top: 36px; }
+  .team-photo-wrapper { height: 240px; }
+  .team-card { padding: 0 0 28px 0; overflow: hidden; }
+  .team-card .team-card-header,
+  .team-card .team-role,
+  .team-card .team-bio,
+  .team-card .team-details,
+  .team-card .team-skills { padding-left: 24px; padding-right: 24px; }
+  .team-photo-wrapper { margin-bottom: 20px; }
+  .team-card:hover .team-photo { transform: none; }
+
+  .why-grid { margin-top: 36px; }
+
+  .contact-layout { margin-top: 36px; gap: var(--grid-gap); }
+  .contact-info p { margin-bottom: 24px; }
+
+  .form-submit { width: 100%; text-align: center; }
+
+  .divider { margin: 0; }
+}
+
+/* — Small phones — */
+@media (max-width: 400px) {
+  .nav-inner { height: 60px; }
+  .nav-links { top: 60px; padding: 24px 20px; }
+
+  .hero { padding: 80px 0 40px; }
+  .hero-cta { padding: 13px 20px; }
+
+  .service-card { padding: 22px; }
+  .service-tags span { font-size: 0.65rem; padding: 3px 8px; }
+
+  .team-photo-wrapper { height: 200px; }
+  .team-card .team-card-header,
+  .team-card .team-role,
+  .team-card .team-bio,
+  .team-card .team-details,
+  .team-card .team-skills { padding-left: 18px; padding-right: 18px; }
+
+  .team-details li { font-size: 0.82rem; }
+  .team-skills span { font-size: 0.62rem; padding: 3px 8px; }
+
+  .why-item { padding: 24px 16px; }
+
+  .form-field input,
+  .form-field textarea { padding: 12px 14px; font-size: 16px; }
 }
 </style>
 </head>
@@ -843,6 +967,9 @@ footer {
     <div class="team-grid">
       <!-- Zoltan -->
       <div class="team-card reveal reveal-delay-1">
+        <div class="team-photo-wrapper">
+          <img src="zoltan.jpeg" alt="Zoltan Varju" class="team-photo">
+        </div>
         <div class="team-card-header">
           <h3 class="team-name">Zoltan Varju</h3>
           <a href="https://crowintelligence.org/" target="_blank" rel="noopener" class="team-link">Website &nearr;</a>
@@ -869,6 +996,9 @@ footer {
 
       <!-- Agoston -->
       <div class="team-card reveal reveal-delay-2">
+        <div class="team-photo-wrapper">
+          <img src="agoston.jpg" alt="Agoston Fung" class="team-photo">
+        </div>
         <div class="team-card-header">
           <h3 class="team-name">Agoston Fung</h3>
           <a href="https://www.linkedin.com/in/agostonfung/" target="_blank" rel="noopener" class="team-link">LinkedIn &nearr;</a>
